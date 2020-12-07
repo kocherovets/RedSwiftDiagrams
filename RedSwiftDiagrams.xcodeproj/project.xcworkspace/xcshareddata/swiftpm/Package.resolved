@@ -1,0 +1,70 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "DeclarativeTVC",
+        "repositoryURL": "https://github.com/kocherovets/DeclarativeTVC",
+        "state": {
+          "branch": null,
+          "revision": "b16e3c5d808760f3aa14762c6f932beda016e099",
+          "version": "1.0.23"
+        }
+      },
+      {
+        "package": "DifferenceKit",
+        "repositoryURL": "https://github.com/ra1028/DifferenceKit.git",
+        "state": {
+          "branch": null,
+          "revision": "14c66681e12a38b81045f44c6c29724a0d4b0e72",
+          "version": "1.1.5"
+        }
+      },
+      {
+        "package": "DITranquillity",
+        "repositoryURL": "https://github.com/ivlevAstef/DITranquillity.git",
+        "state": {
+          "branch": null,
+          "revision": "85d075694e6db5de32b8771bd653fc35a605e24f",
+          "version": "4.1.7"
+        }
+      },
+      {
+        "package": "RedSwift",
+        "repositoryURL": "https://github.com/kocherovets/RedSwift",
+        "state": {
+          "branch": null,
+          "revision": "818d035251392e760d200d099b7b2fc3cc0acecb",
+          "version": "2.0.1"
+        }
+      },
+      {
+        "package": "ReduxVM",
+        "repositoryURL": "https://github.com/kocherovets/ReduxVM.git",
+        "state": {
+          "branch": null,
+          "revision": "1f372784e5fc27e54f30d58bef4ef8cbb32e2459",
+          "version": "2.0.4"
+        }
+      },
+      {
+        "package": "SnapKit",
+        "repositoryURL": "https://github.com/SnapKit/SnapKit.git",
+        "state": {
+          "branch": null,
+          "revision": "d458564516e5676af9c70b4f4b2a9178294f1bc6",
+          "version": "5.0.1"
+        }
+      },
+      {
+        "package": "SwiftLazy",
+        "repositoryURL": "https://github.com/ivlevAstef/SwiftLazy.git",
+        "state": {
+          "branch": null,
+          "revision": "70f0b50542d97212b8bad18075a500537c244abc",
+          "version": "1.1.8"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
