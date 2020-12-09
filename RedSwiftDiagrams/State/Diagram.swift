@@ -11,13 +11,22 @@ struct Diagram: Equatable {
         var origin: CGPoint
     }
 
+    struct Link: Equatable {
+        var from: UUID
+        var to: UUID
+    }
+
     var lists = [List]()
     var listRects = [UUID: CGRect]()
     var itemRects = [UUID: CGRect]()
     var titleRects = [UUID: CGRect]()
     var addRects = [UUID: AddRect]()
 
-    init(lists: [ListWithPosition] = []) {
+    var links = [Link]()
+    var linkLables = [UUID: String]()
+
+    init(lists: [ListWithPosition] = [],
+         links: [Link] = []) {
         set(lists: lists)
     }
 
@@ -106,6 +115,31 @@ struct Diagram: Equatable {
             itemRects[uuid] = nil
             titleRects[uuid] = nil
             addRects[uuid] = nil
+        }
+    }
+
+    mutating func set(links: [Link]) {
+        self.links = links
+        linkLables = [:]
+        var lables = Set<String>()
+        for link in links {
+            if let _ = linkLables[link.to] {
+                continue
+            }
+            let lable = nextLinkLabel(lables: lables)
+            linkLables[link.to] = lable
+            lables.insert(lable)
+        }
+    }
+
+    func nextLinkLabel(lables: Set<String>) -> String {
+        var i = 1
+        while true {
+            let lable = String(i)
+            if !lables.contains(lable) {
+                return lable
+            }
+            i += 1
         }
     }
 }

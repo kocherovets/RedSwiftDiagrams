@@ -32,11 +32,27 @@ extension AppState {
         }
     }
 
+    struct SetDiagramAction: Action {
+        let diagram: Diagram
+
+        func updateState(_ state: inout AppState) {
+            state.diagram = diagram
+        }
+    }
+
     struct SetListsAction: Action {
         let lists: [Diagram.ListWithPosition]
 
         func updateState(_ state: inout AppState) {
             state.diagram.set(lists: lists)
+        }
+    }
+
+    struct SetLinksAction: Action {
+        let links: [Diagram.Link]
+
+        func updateState(_ state: inout AppState) {
+            state.diagram.set(links: links)
         }
     }
 
@@ -77,14 +93,6 @@ extension AppState {
 
         func updateState(_ state: inout AppState) {
             state.diagram.setTags(listUUID: state.selectedUUID, tags: tags)
-        }
-    }
-
-    struct SetDiagramAction: Action {
-        let diagram: Diagram
-
-        func updateState(_ state: inout AppState) {
-            state.diagram = diagram
         }
     }
 

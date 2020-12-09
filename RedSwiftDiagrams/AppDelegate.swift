@@ -44,16 +44,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         InteractorLogger.loggingExcludedSideEffects = [
         ]
 
+        let uuid1 = UUID()
+        let uuid2 = UUID()
+        let uuid3 = UUID()
         (container.resolve() as Store<AppState>).dispatch(AppState.SetListsAction(lists: [
             Diagram.ListWithPosition(list: List(header: List.Item(uuid: UUID(),
                                                                   typeName: "Title",
                                                                   tags: ""),
                                                 items: [
-                                                    List.Item(uuid: UUID(),
+                                                    List.Item(uuid: uuid1,
                                                               typeName: "Item 1",
                                                               tags: "UIToolbar"),
                                                     List.Item(uuid: UUID(),
                                                               typeName: "Item 2",
+                                                              tags: ""),
+                                                    List.Item(uuid: uuid3,
+                                                              typeName: "Item 3",
                                                               tags: ""),
                                                 ]),
                                      origin: .zero),
@@ -64,11 +70,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                     List.Item(uuid: UUID(),
                                                               typeName: "Item df askldjf aksfj sdfsdf sdf sdf",
                                                               tags: ""),
-                                                    List.Item(uuid: UUID(),
+                                                    List.Item(uuid: uuid2,
                                                               typeName: "Item  skdfj sf skdf",
                                                               tags: ""),
                                                 ]),
                                      origin: CGPoint(x: 300, y: 300))]))
+
+        (container.resolve() as Store<AppState>).dispatch(AppState.SetLinksAction(links: [
+            Diagram.Link(from: uuid1, to: uuid2),
+            Diagram.Link(from: uuid3, to: uuid2),
+            Diagram.Link(from: uuid2, to: uuid1),
+        ]))
 
         return true
     }

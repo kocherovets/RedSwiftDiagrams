@@ -39,7 +39,6 @@ extension Diagram {
     }
 
     mutating func updateGeometry(list: List) {
-        
         let origin = listRects[list.uuid]?.origin ?? .zero
         eraseRects(uuid: list.uuid)
 
@@ -153,6 +152,47 @@ extension Diagram {
                         else { return }
                         context.stroke(rect.applying(transform))
                     }
+                }
+            }
+        }
+
+        context.setLineWidth(1)
+        context.setStrokeColor(ListUI.borderColor)
+        let diameter = ListUI.itemHeight - 10
+        let margin = (ListUI.itemHeight - diameter) / 2
+        for link in links {
+            if let lable = linkLables[link.to] {
+                let size = lable.boundingRect(with: CGSize(width: 1000, height: diameter),
+                                              options: [.usesLineFragmentOrigin],
+                                              attributes: ListUI.itemAttributes,
+                                              context: nil).size
+                if let rect = itemRects[link.from] {
+                    let linkRect = CGRect(x: rect.right + 10,
+                                          y: rect.y + margin,
+                                          width: diameter,
+                                          height: diameter).applying(transform)
+                    context.strokeEllipse(in: linkRect)
+                    let lableRect = CGRect(origin: CGPoint(x: linkRect.x + (linkRect.width - size.width) / 2,
+                                                           y: linkRect.y + (linkRect.height - size.height) / 2),
+                                           size: size)
+                    lable.draw(with: lableRect,
+                               options: [.usesLineFragmentOrigin],
+                               attributes: ListUI.itemAttributes,
+                               context: nil)
+                }
+                if let rect = itemRects[link.to] {
+                    let linkRect = CGRect(x: rect.left - 10 - diameter,
+                                          y: rect.y + margin,
+                                          width: diameter,
+                                          height: diameter).applying(transform)
+                    context.strokeEllipse(in: linkRect)
+                    let lableRect = CGRect(origin: CGPoint(x: linkRect.x + (linkRect.width - size.width) / 2,
+                                                           y: linkRect.y + (linkRect.height - size.height) / 2),
+                                           size: size)
+                    lable.draw(with: lableRect,
+                               options: [.usesLineFragmentOrigin],
+                               attributes: ListUI.itemAttributes,
+                               context: nil)
                 }
             }
         }
