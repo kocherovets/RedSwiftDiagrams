@@ -1,24 +1,24 @@
 import DeclarativeTVC
 import UIKit
 
-public class Diagram: UIView {
+public class DiagramView: UIView {
     struct Props: Equatable {
-        let lists: [List]
+        let diagram: Diagram
         let addItemCommand: CommandWith<(UUID, UUID?)>
         let selectCommand: CommandWith<UUID?>
-        let updateListOriginCommand: CommandWith<(UUID, CGPoint)>
+        let updateDiagramCommand: CommandWith<Diagram>
         let setNewListOriginCommand: CommandWith<CGPoint>
     }
 
     var props: Props? {
         didSet {
             if let props = props {
-                set(lists: props.lists.map { ListShape(list: $0) })
+                set(diagram: props.diagram)
             }
         }
     }
 
-    var listShapes = [ListShape]()
+    var diagram = Diagram()
 
     var realRect = CGRect(x: 0.0, y: 0.0, width: 10.0, height: 10.0)
 
@@ -45,7 +45,7 @@ public class Diagram: UIView {
     override public var bounds: CGRect {
         didSet {
             if oldValue == .zero {
-                if let rect = calculateRealRect(for: listShapes) {
+                if let rect = calculateRealRect() {
                     var delta = rect.origin.applying(transformFromRealToScreen())
                     delta += CGPoint(x: -100, y: contentRect.height - 100)
                     realLeftBottom = delta.applying(transformFromRealToScreen().inverted())

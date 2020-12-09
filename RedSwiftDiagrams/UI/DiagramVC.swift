@@ -8,7 +8,7 @@ import UIKit
 
 enum DiagramVCModule {
     struct Props: Properties, Equatable {
-        let diagramProps: Diagram.Props
+        let diagramProps: DiagramView.Props
     }
 
     class Presenter: PresenterBase<AppState, Props, ViewController> {
@@ -18,16 +18,16 @@ enum DiagramVCModule {
 
         override func props(for box: StateBox<AppState>, trunk: Trunk) -> Props? {
             return Props(
-                diagramProps: Diagram.Props(
-                    lists: box.state.lists,
+                diagramProps: DiagramView.Props(
+                    diagram: box.state.diagram,
                     addItemCommand: CommandWith<(UUID, UUID?)> { listUUID, prevItemUUID in
                         trunk.dispatch(AppState.AddItemAction(listUUID: listUUID, prevUUID: prevItemUUID))
                     },
                     selectCommand: CommandWith<UUID?> {
                         trunk.dispatch(AppState.SetSelectedAction(uuid: $0))
                     },
-                    updateListOriginCommand: CommandWith<(UUID, CGPoint)> {
-                        trunk.dispatch(AppState.SetListOriginAction(listUUID: $0, origin: $1))
+                    updateDiagramCommand: CommandWith<Diagram> {
+                        trunk.dispatch(AppState.SetDiagramAction(diagram: $0))
                     },
                     setNewListOriginCommand: CommandWith<CGPoint> {
                         trunk.dispatch(AppState.SetNewListOriginAction(point: $0))
@@ -40,7 +40,7 @@ enum DiagramVCModule {
     class ViewController: VC, PropsReceiver {
         typealias Props = DiagramVCModule.Props
 
-        var diagram: Diagram!
+        var diagram: DiagramView!
 
         init(store: Store<AppState>) {
             super.init(nibName: nil, bundle: nil)
@@ -57,7 +57,7 @@ enum DiagramVCModule {
         override func viewDidLoad() {
             super.viewDidLoad()
 
-            diagram = Diagram()
+            diagram = DiagramView()
             view.addSubview(diagram)
             diagram.snp.makeConstraints { make in
                 make.edges.equalTo(self.view)

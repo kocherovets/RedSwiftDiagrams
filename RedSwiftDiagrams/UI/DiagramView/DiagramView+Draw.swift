@@ -1,6 +1,6 @@
 import UIKit
 
-extension Diagram {
+extension DiagramView {
     override public func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else { return }
 
@@ -15,8 +15,6 @@ extension Diagram {
 
         context.restoreGState()
 
-        for list in listShapes {
-            list.draw(on: rect, with: transform, in: context, selectedUUID: selectedUUID)
-        }
+        diagram.draw(on: rect, with: transform, in: context, selectedUUID: selectedUUID)
     }
 }

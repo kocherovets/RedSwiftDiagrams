@@ -1,6 +1,6 @@
 import UIKit
 
-extension Diagram: UIGestureRecognizerDelegate {
+extension DiagramView: UIGestureRecognizerDelegate {
     func createGestures() {
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(diagramTap(_:)))
 
@@ -38,17 +38,24 @@ extension Diagram: UIGestureRecognizerDelegate {
         let point = gesture.location(in: self)
         let t = transformFromRealToScreen()
 
-        for shape in listShapes {
-            switch shape.cursor(to: point, with: t) {
-            case let .plus(listUUID, prevItemUUID):
-                props?.addItemCommand.perform(with: (listUUID, prevItemUUID))
-                return
-            default:
-                break
-            }
+        if case let .plus(listUUID, prevItemUUID) = diagram.cursor(to: point, with: t) {
+            props?.addItemCommand.perform(with: (listUUID, prevItemUUID))
+            return
         }
 
-        closestShape(to: point)
+        selectedUUID = nil
+        switch diagram.selectedUUID(to: point, with: t) {
+        case let .list(uuid):
+            selectedUUID = uuid
+        case let .arrow(uuid):
+            if selectedUUID == nil {
+                selectedUUID = uuid
+            }
+        default:
+            break
+        }
+        props?.selectCommand.perform(with: selectedUUID)
+
         setNeedsDisplay()
     }
 
@@ -57,14 +64,12 @@ extension Diagram: UIGestureRecognizerDelegate {
         case .began:
             let point = gesture.location(in: self)
             let t = transformFromRealToScreen()
-            for shape in listShapes {
-                if let uuid = shape.draggedList(to: point, with: t),
-                   let index = listShapes.firstIndex(where: { $0.uuid == uuid }) {
-                    draggedListIndex = index
-                    beginDragRealListOrigin = listShapes[index].list.rect.origin
-                    dragTransform = transformFromRealToScreen().inverted()
-                    beginDragRealPoint = gesture.location(in: self).applying(dragTransform)
-                }
+            if let uuid = diagram.draggedList(to: point, with: t),
+               let index = diagram.lists.firstIndex(where: { $0.uuid == uuid }) {
+                draggedListIndex = index
+                beginDragRealListOrigin = diagram.listRects[uuid]?.origin
+                dragTransform = transformFromRealToScreen().inverted()
+                beginDragRealPoint = gesture.location(in: self).applying(dragTransform)
             }
         case .changed:
             if let beginDragRealListOrigin = beginDragRealListOrigin,
@@ -73,14 +78,17 @@ extension Diagram: UIGestureRecognizerDelegate {
                 let point = gesture.location(in: self).applying(dragTransform)
                 let delta = beginDragRealPoint - point
 
-                listShapes[draggedListIndex].list.updateGeometry(origin: beginDragRealListOrigin - delta)
+                if var rect = diagram.listRects[diagram.lists[draggedListIndex].uuid] {
+                    rect.origin = beginDragRealListOrigin - delta
+                    diagram.listRects[diagram.lists[draggedListIndex].uuid] = rect
+                    diagram.updateGeometry(list: diagram.lists[draggedListIndex])
+                }
 
                 setNeedsDisplay()
             }
         case .ended, .cancelled:
-            if let draggedListIndex = draggedListIndex {
-                props?.updateListOriginCommand.perform(
-                    with: (listShapes[draggedListIndex].uuid, listShapes[draggedListIndex].list.rect.origin))
+            if let _ = draggedListIndex {
+                props?.updateDiagramCommand.perform(with: diagram)
             }
             beginDragRealListOrigin = nil
             beginDragRealPoint = nil
@@ -115,39 +123,18 @@ extension Diagram: UIGestureRecognizerDelegate {
         }
     }
 
-    fileprivate func closestShape(to point: CGPoint) {
-        let t = transformFromRealToScreen()
-        selectedUUID = nil
-        for shape in listShapes {
-            let shape = shape.selectedUUID(to: point, with: t)
-            switch shape {
-            case let .list(uuid):
-                selectedUUID = uuid
-            case let .arrow(uuid):
-                if selectedUUID == nil {
-                    selectedUUID = uuid
-                }
-            default:
-                break
-            }
-        }
-        props?.selectCommand.perform(with: selectedUUID)
-    }
-
     @objc
     func hovering(_ gesture: UIHoverGestureRecognizer) {
         switch gesture.state {
         case .began, .changed:
             let point = gesture.location(in: self)
             let t = transformFromRealToScreen()
-            for shape in listShapes {
-                switch shape.cursor(to: point, with: t) {
-                case .plus:
-                    NSCursor.crosshair.set()
-                    return
-                default:
-                    break
-                }
+            switch diagram.cursor(to: point, with: t) {
+            case .plus:
+                NSCursor.crosshair.set()
+                return
+            default:
+                break
             }
             NSCursor.arrow.set()
         case .ended:

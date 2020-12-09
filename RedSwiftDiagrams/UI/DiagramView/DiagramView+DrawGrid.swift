@@ -1,6 +1,6 @@
 import UIKit
 
-extension Diagram {
+extension DiagramView {
     func drawGrid(rect: CGRect, in context: CGContext) {
         context.setStrokeColor(red: 221.0 / 255.0, green: 221.0 / 255.0, blue: 221.0 / 255.0, alpha: 1)
         context.setLineWidth(0.5)

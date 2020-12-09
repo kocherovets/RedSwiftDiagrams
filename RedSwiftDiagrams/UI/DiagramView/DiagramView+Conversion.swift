@@ -1,6 +1,6 @@
 import UIKit
 
-extension Diagram {
+extension DiagramView {
     func transformFromRealToScreen(realLeftBottom: CGPoint? = nil,
                                    scale: CGPoint? = nil,
                                    contentRect: CGRect? = nil) -> CGAffineTransform {

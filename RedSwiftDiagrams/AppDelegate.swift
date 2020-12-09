@@ -45,33 +45,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ]
 
         (container.resolve() as Store<AppState>).dispatch(AppState.SetListsAction(lists: [
-            List(
-                origin: .zero,
-                header: List.Item(uuid: UUID(),
-                                  typeName: "Title",
-                                  tags: ""),
-                items: [
-                    List.Item(uuid: UUID(),
-                              typeName: "Item 1",
-                              tags: "UIToolbar"),
-                    List.Item(uuid: UUID(),
-                              typeName: "Item 2",
-                              tags: ""),
-                ]),
-            List(
-                origin: CGPoint(x: 300, y: 300),
-                header: List.Item(uuid: UUID(),
-                                  typeName: "Title 2",
-                                  tags: ""),
-                items: [
-                    List.Item(uuid: UUID(),
-                              typeName: "Item df askldjf aksfj sdfsdf sdf sdf",
-                              tags: ""),
-                    List.Item(uuid: UUID(),
-                              typeName: "Item  skdfj sf skdf",
-                              tags: ""),
-                ]),
-        ]))
+            Diagram.ListWithPosition(list: List(header: List.Item(uuid: UUID(),
+                                                                  typeName: "Title",
+                                                                  tags: ""),
+                                                items: [
+                                                    List.Item(uuid: UUID(),
+                                                              typeName: "Item 1",
+                                                              tags: "UIToolbar"),
+                                                    List.Item(uuid: UUID(),
+                                                              typeName: "Item 2",
+                                                              tags: ""),
+                                                ]),
+                                     origin: .zero),
+            Diagram.ListWithPosition(list: List(header: List.Item(uuid: UUID(),
+                                                                  typeName: "Title 2",
+                                                                  tags: ""),
+                                                items: [
+                                                    List.Item(uuid: UUID(),
+                                                              typeName: "Item df askldjf aksfj sdfsdf sdf sdf",
+                                                              tags: ""),
+                                                    List.Item(uuid: UUID(),
+                                                              typeName: "Item  skdfj sf skdf",
+                                                              tags: ""),
+                                                ]),
+                                     origin: CGPoint(x: 300, y: 300))]))
 
         return true
     }
