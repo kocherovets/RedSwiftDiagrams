@@ -1,20 +1,25 @@
 import UIKit
 
-public enum SelectedUUID {
-    case listItem(UUID)
-    case arrow(UUID)
-}
-
 public enum Cursor {
     case arrow
     case plus(prevItemUUID: UUID)
 }
 
 extension Diagram {
-    func selectedUUID(to touchPoint: CGPoint, with transform: CGAffineTransform) -> SelectedUUID? {
+    func selected(to touchPoint: CGPoint, with transform: CGAffineTransform) -> Diagram.Selected? {
         for (uuid, rect) in itemRects {
             if rect.applying(transform).contains(touchPoint) {
-                return .listItem(uuid)
+                return .item(uuid: uuid)
+            }
+        }
+        for uuid in links.map({ $0.from }) {
+            if linkFromRect(uuid: uuid)?.applying(transform).contains(touchPoint) == true {
+                return .from(uuid: uuid)
+            }
+        }
+        for uuid in links.map({ $0.to }) {
+            if linkToRect(uuid: uuid)?.applying(transform).contains(touchPoint) == true {
+                return .to(uuid: uuid)
             }
         }
         return nil
@@ -99,7 +104,7 @@ extension Diagram {
     func draw(on rect: CGRect,
               with transform: CGAffineTransform,
               in context: CGContext,
-              selectedUUID: UUID?) {
+              selected: Diagram.Selected?) {
         for list in lists {
             if let listRect = listRects[list.uuid],
                rect.intersects(listRect.applying(transform)) {
@@ -132,35 +137,18 @@ extension Diagram {
                 context.setStrokeColor(ListUI.borderColor)
                 context.stroke(listRect.applying(transform))
                 context.stroke(headerRect.applying(transform))
-
-                for item in list.items {
-                    if item.uuid == selectedUUID {
-                        context.setLineWidth(3)
-                        context.setStrokeColor(ListUI.selectedBorderColor)
-                        guard
-                            let rect = itemRects[item.uuid]
-                        else { return }
-                        context.stroke(rect.applying(transform))
-                    }
-                }
             }
         }
 
         context.setLineWidth(1)
         context.setStrokeColor(ListUI.borderColor)
-        let diameter = ListUI.itemHeight - 10
-        let margin = (ListUI.itemHeight - diameter) / 2
         for link in links {
             if let lable = linkLables[link.to] {
-                let size = lable.boundingRect(with: CGSize(width: 1000, height: diameter),
+                let size = lable.boundingRect(with: CGSize(width: 1000, height: ListUI.linkDiameter),
                                               options: [.usesLineFragmentOrigin],
                                               attributes: ListUI.itemAttributes,
                                               context: nil).size
-                if let rect = itemRects[link.from] {
-                    let linkRect = CGRect(x: rect.right + 10,
-                                          y: rect.y + margin,
-                                          width: diameter,
-                                          height: diameter).applying(transform)
+                if let linkRect = linkFromRect(uuid: link.from)?.applying(transform) {
                     context.strokeEllipse(in: linkRect)
                     let lableRect = CGRect(origin: CGPoint(x: linkRect.x + (linkRect.width - size.width) / 2,
                                                            y: linkRect.y + (linkRect.height - size.height) / 2),
@@ -170,11 +158,7 @@ extension Diagram {
                                attributes: ListUI.itemAttributes,
                                context: nil)
                 }
-                if let rect = itemRects[link.to] {
-                    let linkRect = CGRect(x: rect.left - 10 - diameter,
-                                          y: rect.y + margin,
-                                          width: diameter,
-                                          height: diameter).applying(transform)
+                if let linkRect = linkToRect(uuid: link.to)?.applying(transform) {
                     context.strokeEllipse(in: linkRect)
                     let lableRect = CGRect(origin: CGPoint(x: linkRect.x + (linkRect.width - size.width) / 2,
                                                            y: linkRect.y + (linkRect.height - size.height) / 2),
@@ -186,6 +170,48 @@ extension Diagram {
                 }
             }
         }
+        
+        context.setLineWidth(3)
+        context.setStrokeColor(ListUI.selectedBorderColor)
+        switch selected {
+        case let .item(uuid):
+            guard
+                let rect = itemRects[uuid]
+            else { return }
+            context.stroke(rect.applying(transform))
+        case let .from(uuid):
+            guard
+                let rect = linkFromRect(uuid: uuid)
+            else { return }
+            context.strokeEllipse(in: rect.applying(transform))
+        case let .to(uuid):
+            guard
+                let rect = linkToRect(uuid: uuid)
+            else { return }
+            context.strokeEllipse(in: rect.applying(transform))
+        default:
+            break
+        }
+    }
+
+    func linkFromRect(uuid: UUID) -> CGRect? {
+        if let rect = itemRects[uuid] {
+            return CGRect(x: rect.right + 10,
+                          y: rect.y + ListUI.linkMargin,
+                          width: ListUI.linkDiameter,
+                          height: ListUI.linkDiameter)
+        }
+        return nil
+    }
+
+    func linkToRect(uuid: UUID) -> CGRect? {
+        if let rect = itemRects[uuid] {
+            return CGRect(x: rect.left - 10 - ListUI.linkDiameter,
+                          y: rect.y + ListUI.linkMargin,
+                          width: ListUI.linkDiameter,
+                          height: ListUI.linkDiameter)
+        }
+        return nil
     }
 }
 
@@ -204,6 +230,8 @@ struct ListUI {
     static let titleHeight: CGFloat = 40
     static let itemHeight: CGFloat = 40
     static let marging: CGFloat = 10
+    static let linkDiameter: CGFloat = ListUI.itemHeight - 10
+    static let linkMargin: CGFloat = (ListUI.itemHeight - linkDiameter) / 2
 
     static let borderColor = UIColor.black.cgColor
     static let selectedBorderColor = UIColor.blue.cgColor

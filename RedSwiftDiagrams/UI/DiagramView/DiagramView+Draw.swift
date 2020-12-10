@@ -15,6 +15,6 @@ extension DiagramView {
 
         context.restoreGState()
 
-        diagram.draw(on: rect, with: transform, in: context, selectedUUID: selectedUUID)
+        diagram.draw(on: rect, with: transform, in: context, selected: diagram.selected)
     }
 }

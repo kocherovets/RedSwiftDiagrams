@@ -5,7 +5,7 @@ public class DiagramView: UIView {
     struct Props: Equatable {
         let diagram: Diagram
         let addItemCommand: CommandWith<UUID>
-        let selectCommand: CommandWith<UUID?>
+        let selectCommand: CommandWith<Diagram.Selected?>
         let updateDiagramCommand: CommandWith<Diagram>
         let setNewListOriginCommand: CommandWith<CGPoint>
     }
@@ -72,8 +72,6 @@ public class DiagramView: UIView {
     var beginDragRealPoint: CGPoint?
     var dragTransform = CGAffineTransform.identity
     var currentPoint: CGPoint?
-
-    var selectedUUID: UUID?
 
     var beginDragRealListOrigin: CGPoint?
     var draggedListIndex: Int?

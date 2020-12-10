@@ -25,18 +25,8 @@ extension DiagramView: UIGestureRecognizerDelegate {
             return
         }
 
-        selectedUUID = nil
-        switch diagram.selectedUUID(to: point, with: t) {
-        case let .listItem(uuid):
-            selectedUUID = uuid
-        case let .arrow(uuid):
-            if selectedUUID == nil {
-                selectedUUID = uuid
-            }
-        default:
-            break
-        }
-        props?.selectCommand.perform(with: selectedUUID)
+        diagram.selected = diagram.selected(to: point, with: t)
+        props?.selectCommand.perform(with: diagram.selected)
 
         setNeedsDisplay()
     }

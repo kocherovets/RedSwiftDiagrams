@@ -20,6 +20,14 @@ struct Diagram: Equatable {
     var links = [Link]()
     var linkLables = [UUID: String]()
 
+    enum Selected: Equatable {
+        case item(uuid: UUID)
+        case from(uuid: UUID)
+        case to(uuid: UUID)
+    }
+
+    var selected: Selected?
+
     init(lists: [ListWithPosition] = [],
          links: [Link] = []) {
         set(lists: lists)
@@ -69,7 +77,7 @@ struct Diagram: Equatable {
         }
     }
 
-    mutating func delete(uuid: UUID) {
+    mutating func deleteItem(uuid: UUID) {
         if let (listIndex, itemIndex) = indexies(uuid: uuid) {
             if itemIndex > 0 {
                 lists[listIndex].items.remove(at: itemIndex)
@@ -84,6 +92,20 @@ struct Diagram: Equatable {
                 lists.remove(at: listIndex)
             }
         }
+    }
+
+    mutating func deleteLink(from uuid: UUID) {
+        if let link = links.filter({ $0.from == uuid }).first {
+            if links.filter({ $0.to == link.to }).count == 1 {
+                linkLables[link.to] = nil
+            }
+        }
+        links.removeAll(where: { $0.from == uuid })
+    }
+
+    mutating func deleteLink(to uuid: UUID) {
+        linkLables[uuid] = nil
+        links.removeAll(where: { $0.to == uuid })
     }
 
     mutating func set(lists: [ListWithPosition]) {
@@ -127,6 +149,12 @@ struct Diagram: Equatable {
             linkLables[link.to] = lable
             lables.insert(lable)
         }
+    }
+
+    mutating func addLink(link: Link) {
+        let lable = nextLinkLabel(lables: Set<String>(linkLables.values))
+        linkLables[link.to] = lable
+        links.append(link)
     }
 
     func nextLinkLabel(lables: Set<String>) -> String {

@@ -13,6 +13,7 @@ enum ToolbarVCModule {
         let changeTypeNameCommand: CommandWith<String>
         let changeTagsCommand: CommandWith<String>
         let addListCommand: Command
+        let addLinkCommand: Command
     }
 
     class Presenter: PresenterBase<AppState, Props, ViewController> {
@@ -33,6 +34,9 @@ enum ToolbarVCModule {
                 },
                 addListCommand: Command {
                     trunk.dispatch(AppState.AddNewListAction())
+                },
+                addLinkCommand: Command {
+                    trunk.dispatch(AppState.StartNewLinkAction())
                 }
             )
         }
@@ -71,6 +75,7 @@ enum ToolbarVCModule {
 
             let linkButton = UIButton(type: UIButton.ButtonType.system)
             linkButton.setImage(UIImage(systemName: "return"), for: [])
+            linkButton.addTarget(self, action: #selector(addLink), for: .touchUpInside)
             view.addSubview(linkButton)
             linkButton.snp.makeConstraints { make in
                 make.left.equalTo(addButton.snp.right).offset(10)
@@ -131,6 +136,10 @@ enum ToolbarVCModule {
 
         @objc func addList() {
             props?.addListCommand.perform()
+        }
+
+        @objc func addLink() {
+            props?.addLinkCommand.perform()
         }
     }
 }

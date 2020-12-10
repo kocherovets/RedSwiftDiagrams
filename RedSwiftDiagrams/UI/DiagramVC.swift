@@ -23,8 +23,8 @@ enum DiagramVCModule {
                     addItemCommand: CommandWith<UUID> { prevItemUUID in
                         trunk.dispatch(AppState.AddItemAction(prevUUID: prevItemUUID))
                     },
-                    selectCommand: CommandWith<UUID?> {
-                        trunk.dispatch(AppState.SetSelectedAction(uuid: $0))
+                    selectCommand: CommandWith<Diagram.Selected?> {
+                        trunk.dispatch(AppState.SetSelectedAction(selected: $0))
                     },
                     updateDiagramCommand: CommandWith<Diagram> {
                         trunk.dispatch(AppState.SetDiagramAction(diagram: $0))

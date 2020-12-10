@@ -5,8 +5,13 @@ import RedSwift
 
 struct AppState: RootStateType, Equatable {
     var diagram = Diagram()
-    var selectedUUID: UUID?
     var newListOrigin = CGPoint.zero
+
+    struct NewLink: Equatable {
+        var from: UUID?
+    }
+
+    var newLink: NewLink?
 
     var error = StateError.none
 }
@@ -19,7 +24,10 @@ enum StateError: Error, Equatable {
 
 extension AppState {
     func selectedItem() -> List.Item? {
-        diagram.item(uuid: selectedUUID)
+        if case let .item(uuid) = diagram.selected {
+            return diagram.item(uuid: uuid)
+        }
+        return nil
     }
 }
 
@@ -57,19 +65,38 @@ extension AppState {
     }
 
     struct SetSelectedAction: Action, UIToolbar {
-        let uuid: UUID?
+        let selected: Diagram.Selected?
 
         func updateState(_ state: inout AppState) {
-            state.selectedUUID = uuid
+            state.diagram.selected = selected
+            if case let .item(uuid) = selected {
+                if let _ = state.newLink {
+                    if let from = state.newLink?.from {
+                        state.diagram.addLink(link: Diagram.Link(from: from, to: uuid))
+                        state.newLink = nil
+                    } else {
+                        state.newLink?.from = uuid
+                    }
+                }
+                return
+            }
+            state.newLink = nil
         }
     }
 
     struct DeleteSelectedAction: Action {
         func updateState(_ state: inout AppState) {
-            if let selectedUUID = state.selectedUUID {
-                state.diagram.delete(uuid: selectedUUID)
+            switch state.diagram.selected {
+            case let .item(uuid):
+                state.diagram.deleteItem(uuid: uuid)
+            case let .from(uuid):
+                state.diagram.deleteLink(from: uuid)
+            case let .to(uuid):
+                state.diagram.deleteLink(to: uuid)
+            default:
+                break
             }
-            state.selectedUUID = nil
+            state.diagram.selected = nil
         }
     }
 
@@ -85,8 +112,8 @@ extension AppState {
         let typeName: String
 
         func updateState(_ state: inout AppState) {
-            if let selectedUUID = state.selectedUUID {
-                state.diagram.setTypeName(uuid: selectedUUID, typeName: typeName)
+            if case let .item(uuid) = state.diagram.selected {
+                state.diagram.setTypeName(uuid: uuid, typeName: typeName)
             }
         }
     }
@@ -95,8 +122,8 @@ extension AppState {
         let tags: String
 
         func updateState(_ state: inout AppState) {
-            if let selectedUUID = state.selectedUUID {
-                state.diagram.setTags(uuid: selectedUUID, tags: tags)
+            if case let .item(uuid) = state.diagram.selected {
+                state.diagram.setTags(uuid: uuid, tags: tags)
             }
         }
     }
@@ -112,6 +139,12 @@ extension AppState {
 
         func updateState(_ state: inout AppState) {
             state.newListOrigin = point
+        }
+    }
+
+    struct StartNewLinkAction: Action {
+        func updateState(_ state: inout AppState) {
+            state.newLink = NewLink()
         }
     }
 }
