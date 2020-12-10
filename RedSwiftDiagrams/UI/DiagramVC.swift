@@ -20,8 +20,8 @@ enum DiagramVCModule {
             return Props(
                 diagramProps: DiagramView.Props(
                     diagram: box.state.diagram,
-                    addItemCommand: CommandWith<(UUID, UUID?)> { listUUID, prevItemUUID in
-                        trunk.dispatch(AppState.AddItemAction(listUUID: listUUID, prevUUID: prevItemUUID))
+                    addItemCommand: CommandWith<UUID> { prevItemUUID in
+                        trunk.dispatch(AppState.AddItemAction(prevUUID: prevItemUUID))
                     },
                     selectCommand: CommandWith<UUID?> {
                         trunk.dispatch(AppState.SetSelectedAction(uuid: $0))

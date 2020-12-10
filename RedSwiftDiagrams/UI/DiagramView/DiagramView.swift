@@ -4,7 +4,7 @@ import UIKit
 public class DiagramView: UIView {
     struct Props: Equatable {
         let diagram: Diagram
-        let addItemCommand: CommandWith<(UUID, UUID?)>
+        let addItemCommand: CommandWith<UUID>
         let selectCommand: CommandWith<UUID?>
         let updateDiagramCommand: CommandWith<Diagram>
         let setNewListOriginCommand: CommandWith<CGPoint>
@@ -65,8 +65,7 @@ public class DiagramView: UIView {
     var maxScale = CGPoint(x: CGFloat.greatestFiniteMagnitude, y: CGFloat.greatestFiniteMagnitude)
 
     var tapGesture: UITapGestureRecognizer!
-    var dragShapeGesture: UIPanGestureRecognizer!
-    var dragDiagramGesture: UIPanGestureRecognizer!
+    var dragGesture: UIPanGestureRecognizer!
     var hoverGestureRecognizer: UIHoverGestureRecognizer!
 
     var beginDragRealLeftBottom: CGPoint?

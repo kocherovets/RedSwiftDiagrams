@@ -4,48 +4,30 @@ extension DiagramView: UIGestureRecognizerDelegate {
     func createGestures() {
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(diagramTap(_:)))
 
-        dragShapeGesture = UIPanGestureRecognizer(target: self, action: #selector(dragList(_:)))
-        dragShapeGesture.delegate = self
-        dragShapeGesture.delaysTouchesBegan = true
-        dragShapeGesture.cancelsTouchesInView = false
-
-        dragDiagramGesture = UIPanGestureRecognizer(target: self, action: #selector(dragDiagram(_:)))
-        dragDiagramGesture.allowedScrollTypesMask = .continuous
-        dragDiagramGesture.delegate = self
-        dragDiagramGesture.minimumNumberOfTouches = 2
+        dragGesture = UIPanGestureRecognizer(target: self, action: #selector(drag(_:)))
+        dragGesture.delegate = self
+        dragGesture.delaysTouchesBegan = true
+        dragGesture.cancelsTouchesInView = false
 
         hoverGestureRecognizer = UIHoverGestureRecognizer(target: self, action: #selector(hovering(_:)))
         addGestureRecognizer(hoverGestureRecognizer)
 
-        setupGestures()
-    }
-
-    func setupGestures() {
-        setup(gesture: tapGesture)
-
-        setup(gesture: dragShapeGesture)
-
-        setup(gesture: dragDiagramGesture)
-    }
-
-    fileprivate func setup(gesture: UIGestureRecognizer) {
-        if gestureRecognizers == nil || !gestureRecognizers!.contains(gesture) {
-            addGestureRecognizer(gesture)
-        }
+        addGestureRecognizer(tapGesture)
+        addGestureRecognizer(dragGesture)
     }
 
     @objc fileprivate func diagramTap(_ gesture: UITapGestureRecognizer) {
         let point = gesture.location(in: self)
         let t = transformFromRealToScreen()
 
-        if case let .plus(listUUID, prevItemUUID) = diagram.cursor(to: point, with: t) {
-            props?.addItemCommand.perform(with: (listUUID, prevItemUUID))
+        if case let .plus(prevItemUUID) = diagram.cursor(to: point, with: t) {
+            props?.addItemCommand.perform(with: prevItemUUID)
             return
         }
 
         selectedUUID = nil
         switch diagram.selectedUUID(to: point, with: t) {
-        case let .list(uuid):
+        case let .listItem(uuid):
             selectedUUID = uuid
         case let .arrow(uuid):
             if selectedUUID == nil {
@@ -59,65 +41,52 @@ extension DiagramView: UIGestureRecognizerDelegate {
         setNeedsDisplay()
     }
 
-    @objc fileprivate func dragList(_ gesture: UIPanGestureRecognizer) {
+    @objc fileprivate func drag(_ gesture: UIPanGestureRecognizer) {
         switch gesture.state {
         case .began:
             let point = gesture.location(in: self)
             let t = transformFromRealToScreen()
+            dragTransform = t.inverted()
+            beginDragRealPoint = point.applying(dragTransform)
+
             if let uuid = diagram.draggedList(to: point, with: t),
                let index = diagram.lists.firstIndex(where: { $0.uuid == uuid }) {
                 draggedListIndex = index
                 beginDragRealListOrigin = diagram.listRects[uuid]?.origin
-                dragTransform = transformFromRealToScreen().inverted()
-                beginDragRealPoint = gesture.location(in: self).applying(dragTransform)
+            } else {
+                beginDragRealLeftBottom = realLeftBottom
             }
         case .changed:
-            if let beginDragRealListOrigin = beginDragRealListOrigin,
-               let beginDragRealPoint = beginDragRealPoint,
-               let draggedListIndex = draggedListIndex {
+            if
+                let beginDragRealPoint = beginDragRealPoint {
                 let point = gesture.location(in: self).applying(dragTransform)
                 let delta = beginDragRealPoint - point
 
-                if var rect = diagram.listRects[diagram.lists[draggedListIndex].uuid] {
-                    rect.origin = beginDragRealListOrigin - delta
-                    diagram.listRects[diagram.lists[draggedListIndex].uuid] = rect
-                    diagram.updateGeometry(list: diagram.lists[draggedListIndex])
-                }
+                if let beginDragRealListOrigin = beginDragRealListOrigin,
+                   let draggedListIndex = draggedListIndex {
+                    if var rect = diagram.listRects[diagram.lists[draggedListIndex].uuid] {
+                        rect.origin = beginDragRealListOrigin - delta
+                        diagram.listRects[diagram.lists[draggedListIndex].uuid] = rect
+                        diagram.updateGeometry(list: diagram.lists[draggedListIndex])
+                    }
+                } else if let beginDragRealLeftBottom = beginDragRealLeftBottom {
+                    let point = gesture.location(in: self).applying(dragTransform)
+                    let delta = point - beginDragRealPoint
 
+                    realLeftBottom = beginDragRealLeftBottom - delta
+                }
                 setNeedsDisplay()
             }
         case .ended, .cancelled:
             if let _ = draggedListIndex {
                 props?.updateDiagramCommand.perform(with: diagram)
+            } else {
+                props?.setNewListOriginCommand.perform(with: realNewListOrigin)
             }
+            beginDragRealLeftBottom = nil
             beginDragRealListOrigin = nil
             beginDragRealPoint = nil
             draggedListIndex = nil
-        default:
-            break
-        }
-    }
-
-    @objc fileprivate func dragDiagram(_ gesture: UIPanGestureRecognizer) {
-        switch gesture.state {
-        case .began:
-            beginDragRealLeftBottom = realLeftBottom
-            dragTransform = transformFromRealToScreen().inverted()
-            beginDragRealPoint = gesture.location(in: self).applying(dragTransform)
-        case .changed:
-            if let beginDragRealLeftBottom = beginDragRealLeftBottom,
-               let beginDragRealPoint = beginDragRealPoint {
-                let point = gesture.location(in: self).applying(dragTransform)
-                let delta = point - beginDragRealPoint
-
-                realLeftBottom = beginDragRealLeftBottom - delta
-
-                setNeedsDisplay()
-            }
-        case .ended, .cancelled:
-            beginDragRealLeftBottom = nil
-            beginDragRealPoint = nil
-            props?.setNewListOriginCommand.perform(with: realNewListOrigin)
         default:
             break
         }

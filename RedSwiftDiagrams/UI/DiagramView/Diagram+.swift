@@ -1,29 +1,29 @@
 import UIKit
 
 public enum SelectedUUID {
-    case list(UUID)
+    case listItem(UUID)
     case arrow(UUID)
 }
 
 public enum Cursor {
     case arrow
-    case plus(listUUID: UUID, prevItemUUID: UUID?)
+    case plus(prevItemUUID: UUID)
 }
 
 extension Diagram {
     func selectedUUID(to touchPoint: CGPoint, with transform: CGAffineTransform) -> SelectedUUID? {
         for (uuid, rect) in itemRects {
             if rect.applying(transform).contains(touchPoint) {
-                return .list(uuid)
+                return .listItem(uuid)
             }
         }
         return nil
     }
 
     func cursor(to touchPoint: CGPoint, with transform: CGAffineTransform) -> Cursor? {
-        for (listUUID, addRect) in addRects {
-            if addRect.rect.applying(transform).contains(touchPoint) {
-                return .plus(listUUID: listUUID, prevItemUUID: addRect.prevItem)
+        for (itemUUID, addRect) in addRects {
+            if addRect.applying(transform).contains(touchPoint) {
+                return .plus(prevItemUUID: itemUUID)
             }
         }
         return nil
@@ -55,13 +55,13 @@ extension Diagram {
                                               width: size.width,
                                               height: size.height)
 
-        for index in 0 ..< list.items.count {
+        for index in 1 ..< list.items.count {
             let size = list.items[index].title.boundingRect(with: CGSize(width: 1000, height: ListUI.itemHeight),
                                                             options: [.usesLineFragmentOrigin],
                                                             attributes: ListUI.itemAttributes,
                                                             context: nil).size
             height += ListUI.itemHeight
-            let y = origin.y + ListUI.titleHeight + ListUI.itemHeight * CGFloat(index)
+            let y = origin.y + ListUI.titleHeight + ListUI.itemHeight * CGFloat(index - 1)
             titleRects[list.items[index].uuid] = CGRect(x: origin.x + ListUI.marging,
                                                         y: y + (ListUI.itemHeight - size.height) / 2,
                                                         width: size.width,
@@ -75,27 +75,25 @@ extension Diagram {
 
         let headerRect = CGRect(origin: origin, size: CGSize(width: width, height: ListUI.titleHeight))
         itemRects[list.header.uuid] = headerRect
-        addRects[list.header.uuid] = AddRect(prevItem: nil,
-                                             rect: CGRect(x: headerRect.x,
-                                                          y: headerRect.y + headerRect.height - 3,
-                                                          width: headerRect.width,
-                                                          height: 6))
+        addRects[list.header.uuid] = CGRect(x: headerRect.x,
+                                            y: headerRect.y + headerRect.height - 3,
+                                            width: headerRect.width,
+                                            height: 6)
 
-        for index in 0 ..< list.items.count {
+        for index in 1 ..< list.items.count {
             height += ListUI.itemHeight
             let rect = CGRect(x: origin.x,
-                              y: origin.y + ListUI.titleHeight + ListUI.itemHeight * CGFloat(index),
+                              y: origin.y + ListUI.titleHeight + ListUI.itemHeight * CGFloat(index - 1),
                               width: width,
                               height: ListUI.itemHeight)
             itemRects[list.items[index].uuid] = rect
-            addRects[list.items[index].uuid] = AddRect(prevItem: list.items[index].uuid,
-                                                       rect: CGRect(x: rect.x,
-                                                                    y: rect.y + rect.height - 3,
-                                                                    width: rect.width,
-                                                                    height: 6))
+            addRects[list.items[index].uuid] = CGRect(x: rect.x,
+                                                      y: rect.y + rect.height - 3,
+                                                      width: rect.width,
+                                                      height: 6)
         }
 
-        listRects[list.header.uuid] = CGRect(origin: origin, size: CGSize(width: width, height: height))
+        listRects[list.uuid] = CGRect(origin: origin, size: CGSize(width: width, height: height))
     }
 
     func draw(on rect: CGRect,
@@ -117,8 +115,8 @@ extension Diagram {
                                        attributes: ListUI.titleAttributes,
                                        context: nil)
 
-                for index in 0 ..< list.items.count {
-                    context.setFillColor(index % 2 != 0 ? ListUI.oddColor : ListUI.evenColor)
+                for index in 1 ..< list.items.count {
+                    context.setFillColor(index % 2 == 0 ? ListUI.oddColor : ListUI.evenColor)
                     guard
                         let rect = itemRects[list.items[index].uuid],
                         let titleRect = titleRects[list.items[index].uuid]
@@ -133,14 +131,6 @@ extension Diagram {
                 context.setLineWidth(1)
                 context.setStrokeColor(ListUI.borderColor)
                 context.stroke(listRect.applying(transform))
-
-                if list.header.uuid == selectedUUID {
-                    context.setLineWidth(3)
-                    context.setStrokeColor(ListUI.selectedBorderColor)
-                } else {
-                    context.setLineWidth(1)
-                    context.setStrokeColor(ListUI.borderColor)
-                }
                 context.stroke(headerRect.applying(transform))
 
                 for item in list.items {

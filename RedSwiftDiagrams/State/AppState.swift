@@ -66,17 +66,18 @@ extension AppState {
 
     struct DeleteSelectedAction: Action {
         func updateState(_ state: inout AppState) {
-            state.diagram.delete(uuid: state.selectedUUID)
+            if let selectedUUID = state.selectedUUID {
+                state.diagram.delete(uuid: selectedUUID)
+            }
             state.selectedUUID = nil
         }
     }
 
     struct AddItemAction: Action {
-        let listUUID: UUID
-        let prevUUID: UUID?
+        let prevUUID: UUID
 
         func updateState(_ state: inout AppState) {
-            state.diagram.addItem(listUUID: listUUID, prevUUID: prevUUID)
+            state.diagram.addItem(prevUUID: prevUUID)
         }
     }
 
@@ -84,7 +85,9 @@ extension AppState {
         let typeName: String
 
         func updateState(_ state: inout AppState) {
-            state.diagram.setTypeName(listUUID: state.selectedUUID, typeName: typeName)
+            if let selectedUUID = state.selectedUUID {
+                state.diagram.setTypeName(uuid: selectedUUID, typeName: typeName)
+            }
         }
     }
 
@@ -92,7 +95,9 @@ extension AppState {
         let tags: String
 
         func updateState(_ state: inout AppState) {
-            state.diagram.setTags(listUUID: state.selectedUUID, tags: tags)
+            if let selectedUUID = state.selectedUUID {
+                state.diagram.setTags(uuid: selectedUUID, tags: tags)
+            }
         }
     }
 

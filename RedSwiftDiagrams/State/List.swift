@@ -8,13 +8,12 @@ struct List: Equatable {
         var title: String { typeName + (tags.count > 0 ? " (\(tags))" : "") }
     }
 
-    var header: Item
+    var header: Item { items[0] }
     var items = [Item]()
-    var uuids: [UUID] { [header.uuid] + items.map { $0.uuid }}
+    var uuids: [UUID] { items.map { $0.uuid }}
     var uuid: UUID { header.uuid }
 
-    init(header: Item, items: [Item]) {
-        self.header = header
+    init(items: [Item]) {
         self.items = items
     }
 }
