@@ -1,16 +1,22 @@
 import Foundation
 import UIKit
+
+struct FSList: Codable {
+    var list: List
+    var origin: CGPoint
+}
+
+struct Link: Equatable, Codable {
+    var from: UUID
+    var to: UUID
+}
+
+struct FSDiagram: Codable {
+    let lists: [FSList]
+    let links: [Link]
+}
+
 struct Diagram: Equatable {
-    struct ListWithPosition {
-        var list: List
-        var origin: CGPoint
-    }
-
-    struct Link: Equatable {
-        var from: UUID
-        var to: UUID
-    }
-
     var lists = [List]()
     var listRects = [UUID: CGRect]()
     var itemRects = [UUID: CGRect]()
@@ -28,7 +34,7 @@ struct Diagram: Equatable {
 
     var selected: Selected?
 
-    init(lists: [ListWithPosition] = [],
+    init(lists: [FSList] = [],
          links: [Link] = []) {
         set(lists: lists)
     }
@@ -108,7 +114,7 @@ struct Diagram: Equatable {
         links.removeAll(where: { $0.to == uuid })
     }
 
-    mutating func set(lists: [ListWithPosition]) {
+    mutating func set(lists: [FSList]) {
         self.lists = [List]()
         listRects = [UUID: CGRect]()
         itemRects = [UUID: CGRect]()
@@ -193,4 +199,14 @@ extension Diagram {
     func listOrigin(listUUID: UUID) -> CGPoint {
         listRects[listUUID]?.origin ?? .zero
     }
+
+    func fsDiagram() -> FSDiagram {
+        FSDiagram(
+            lists: lists.map {
+                FSList(list: $0,
+                       origin: listRects[$0.uuid]?.origin ?? .zero)
+            },
+            links: links)
+    }
 }
+

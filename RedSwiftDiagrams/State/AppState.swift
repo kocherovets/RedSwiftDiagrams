@@ -48,8 +48,17 @@ extension AppState {
         }
     }
 
+    struct SetFSDiagramAction: Action {
+        let diagram: FSDiagram
+
+        func updateState(_ state: inout AppState) {
+            state.diagram.set(lists: diagram.lists)
+            state.diagram.set(links: diagram.links)
+        }
+    }
+
     struct SetListsAction: Action {
-        let lists: [Diagram.ListWithPosition]
+        let lists: [FSList]
 
         func updateState(_ state: inout AppState) {
             state.diagram.set(lists: lists)
@@ -57,7 +66,7 @@ extension AppState {
     }
 
     struct SetLinksAction: Action {
-        let links: [Diagram.Link]
+        let links: [Link]
 
         func updateState(_ state: inout AppState) {
             state.diagram.set(links: links)
@@ -72,7 +81,7 @@ extension AppState {
             if case let .item(uuid) = selected {
                 if let _ = state.newLink {
                     if let from = state.newLink?.from {
-                        state.diagram.addLink(link: Diagram.Link(from: from, to: uuid))
+                        state.diagram.addLink(link: Link(from: from, to: uuid))
                         state.newLink = nil
                     } else {
                         state.newLink?.from = uuid
@@ -145,6 +154,16 @@ extension AppState {
     struct StartNewLinkAction: Action {
         func updateState(_ state: inout AppState) {
             state.newLink = NewLink()
+        }
+    }
+
+    struct LoadAction: Action {
+        func updateState(_ state: inout AppState) {
+        }
+    }
+
+    struct SaveAction: Action {
+        func updateState(_ state: inout AppState) {
         }
     }
 }

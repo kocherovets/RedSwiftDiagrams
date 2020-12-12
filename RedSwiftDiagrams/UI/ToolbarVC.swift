@@ -14,6 +14,8 @@ enum ToolbarVCModule {
         let changeTagsCommand: CommandWith<String>
         let addListCommand: Command
         let addLinkCommand: Command
+        let loadCommand: Command
+        let saveCommand: Command
     }
 
     class Presenter: PresenterBase<AppState, Props, ViewController> {
@@ -37,6 +39,12 @@ enum ToolbarVCModule {
                 },
                 addLinkCommand: Command {
                     trunk.dispatch(AppState.StartNewLinkAction())
+                },
+                loadCommand: Command {
+                    trunk.dispatch(AppState.LoadAction())
+                },
+                saveCommand: Command {
+                    trunk.dispatch(AppState.SaveAction())
                 }
             )
         }
@@ -83,11 +91,31 @@ enum ToolbarVCModule {
                 make.width.height.equalTo(40)
             }
 
+            let loadButton = UIButton(type: UIButton.ButtonType.system)
+            loadButton.setImage(UIImage(systemName: "square.and.arrow.down"), for: [])
+            loadButton.addTarget(self, action: #selector(load), for: .touchUpInside)
+            view.addSubview(loadButton)
+            loadButton.snp.makeConstraints { make in
+                make.left.equalTo(linkButton.snp.right).offset(20)
+                make.centerY.equalTo(self.view)
+                make.width.height.equalTo(40)
+            }
+
+            let saveButton = UIButton(type: UIButton.ButtonType.system)
+            saveButton.setImage(UIImage(systemName: "square.and.arrow.up"), for: [])
+            saveButton.addTarget(self, action: #selector(save), for: .touchUpInside)
+            view.addSubview(saveButton)
+            saveButton.snp.makeConstraints { make in
+                make.left.equalTo(loadButton.snp.right).offset(10)
+                make.centerY.equalTo(self.view)
+                make.width.height.equalTo(40)
+            }
+
             let label1 = UILabel()
             label1.text = "Type:"
             view.addSubview(label1)
             label1.snp.makeConstraints { make in
-                make.left.equalTo(linkButton.snp.right).offset(20)
+                make.left.equalTo(saveButton.snp.right).offset(20)
                 make.centerY.equalTo(self.view)
             }
 
@@ -140,6 +168,14 @@ enum ToolbarVCModule {
 
         @objc func addLink() {
             props?.addLinkCommand.perform()
+        }
+
+        @objc func load() {
+            props?.loadCommand.perform()
+        }
+
+        @objc func save() {
+            props?.saveCommand.perform()
         }
     }
 }

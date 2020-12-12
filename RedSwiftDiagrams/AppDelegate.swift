@@ -19,6 +19,9 @@ class AppFramework: DIFramework {
                             ])
         }
         .lifetime(.single)
+
+        container.register(FSService.init).lifetime(.single)
+        container.register(FileInteractor.init).lifetime(.single)
     }
 }
 
@@ -48,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let uuid2 = UUID()
         let uuid3 = UUID()
         (container.resolve() as Store<AppState>).dispatch(AppState.SetListsAction(lists: [
-            Diagram.ListWithPosition(list: List(
+            FSList(list: List(
                 items: [
                     List.Item(uuid: UUID(),
                               typeName: "Title",
@@ -64,7 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                               tags: ""),
                 ]),
             origin: .zero),
-            Diagram.ListWithPosition(list: List(
+            FSList(list: List(
                 items: [
                     List.Item(uuid: UUID(),
                               typeName: "Title 2",
@@ -79,9 +82,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             origin: CGPoint(x: 300, y: 300))]))
 
         (container.resolve() as Store<AppState>).dispatch(AppState.SetLinksAction(links: [
-            Diagram.Link(from: uuid1, to: uuid2),
-            Diagram.Link(from: uuid3, to: uuid2),
-            Diagram.Link(from: uuid2, to: uuid1),
+            Link(from: uuid1, to: uuid2),
+            Link(from: uuid3, to: uuid2),
+            Link(from: uuid2, to: uuid1),
         ]))
 
         return true

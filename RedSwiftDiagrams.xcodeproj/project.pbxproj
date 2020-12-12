@@ -11,6 +11,8 @@
 		C3343623257FB69400AACEDE /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3343622257FB69400AACEDE /* List.swift */; };
 		C3430E00257C01A60001D1AF /* Diagram+.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3430DFF257C01A60001D1AF /* Diagram+.swift */; };
 		C3430E55257D502F0001D1AF /* Short.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3430E54257D502F0001D1AF /* Short.swift */; };
+		C3642E4D2583C7F400F6544D /* FileIteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3642E4C2583C7F400F6544D /* FileIteractor.swift */; };
+		C3642E502583CBDF00F6544D /* FSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3642E4F2583CBDF00F6544D /* FSService.swift */; };
 		C3681C08257BDC2D000E3C91 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C07257BDC2D000E3C91 /* AppDelegate.swift */; };
 		C3681C0A257BDC2D000E3C91 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C09257BDC2D000E3C91 /* SceneDelegate.swift */; };
 		C3681C0C257BDC2D000E3C91 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C0B257BDC2D000E3C91 /* MainVC.swift */; };
@@ -44,6 +46,8 @@
 		C3343622257FB69400AACEDE /* List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
 		C3430DFF257C01A60001D1AF /* Diagram+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Diagram+.swift"; sourceTree = "<group>"; };
 		C3430E54257D502F0001D1AF /* Short.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Short.swift; sourceTree = "<group>"; };
+		C3642E4C2583C7F400F6544D /* FileIteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileIteractor.swift; sourceTree = "<group>"; };
+		C3642E4F2583CBDF00F6544D /* FSService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FSService.swift; sourceTree = "<group>"; };
 		C3681C04257BDC2D000E3C91 /* RedSwiftDiagrams.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RedSwiftDiagrams.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3681C07257BDC2D000E3C91 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C3681C09257BDC2D000E3C91 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -125,6 +129,8 @@
 				C3681C46257BE2C2000E3C91 /* AppState.swift */,
 				C3343622257FB69400AACEDE /* List.swift */,
 				C334361E257FB55D00AACEDE /* Diagram.swift */,
+				C3642E4C2583C7F400F6544D /* FileIteractor.swift */,
+				C3642E4F2583CBDF00F6544D /* FSService.swift */,
 			);
 			path = State;
 			sourceTree = "<group>";
@@ -267,6 +273,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3681CC0257BF6FB000E3C91 /* DiagramView+DrawGrid.swift in Sources */,
+				C3642E4D2583C7F400F6544D /* FileIteractor.swift in Sources */,
+				C3642E502583CBDF00F6544D /* FSService.swift in Sources */,
 				C3681C0C257BDC2D000E3C91 /* MainVC.swift in Sources */,
 				C3430E55257D502F0001D1AF /* Short.swift in Sources */,
 				C3681CB0257BF6FB000E3C91 /* CGFloat+.swift in Sources */,
