@@ -10,17 +10,23 @@ enum ToolbarVCModule {
     struct Props: Properties, Equatable {
         let typeName: String
         let tags: String
+        let undoEnabled: Bool
+        let redoEnabled: Bool
+        let trashEnabled: Bool
         let changeTypeNameCommand: CommandWith<String>
         let changeTagsCommand: CommandWith<String>
         let addListCommand: Command
         let addLinkCommand: Command
         let loadCommand: Command
         let saveCommand: Command
+        let undoCommand: Command
+        let redoCommand: Command
+        let removeCommand: Command
     }
 
     class Presenter: PresenterBase<AppState, Props, ViewController> {
         override func reaction(for box: StateBox<AppState>) -> ReactionToState {
-            box.lastAction is UIToolbar ? .props : .none
+            .props
         }
 
         override func props(for box: StateBox<AppState>, trunk: Trunk) -> Props? {
@@ -28,6 +34,9 @@ enum ToolbarVCModule {
             return Props(
                 typeName: item?.typeName ?? "",
                 tags: item?.tags ?? "",
+                undoEnabled: box.state.undo.count > 0,
+                redoEnabled: box.state.redo.count > 0,
+                trashEnabled: box.state.diagram.selected != nil,
                 changeTypeNameCommand: CommandWith<String> {
                     trunk.dispatch(AppState.SetTypeNameAction(typeName: $0))
                 },
@@ -45,6 +54,15 @@ enum ToolbarVCModule {
                 },
                 saveCommand: Command {
                     trunk.dispatch(AppState.SaveAction())
+                },
+                undoCommand: Command {
+                    trunk.dispatch(AppState.UndoAction())
+                },
+                redoCommand: Command {
+                    trunk.dispatch(AppState.RedoAction())
+                },
+                removeCommand: Command {
+                    trunk.dispatch(AppState.DeleteSelectedAction())
                 }
             )
         }
@@ -67,6 +85,9 @@ enum ToolbarVCModule {
 
         var typeNameTF: UITextField?
         var tagsTF: UITextField?
+        var undoButton: UIButton?
+        var redoButton: UIButton?
+        var removeButton: UIButton?
 
         override func viewDidLoad() {
             super.viewDidLoad()
@@ -82,7 +103,7 @@ enum ToolbarVCModule {
             }
 
             let linkButton = UIButton(type: UIButton.ButtonType.system)
-            linkButton.setImage(UIImage(systemName: "return"), for: [])
+            linkButton.setImage(UIImage(systemName: "link"), for: [])
             linkButton.addTarget(self, action: #selector(addLink), for: .touchUpInside)
             view.addSubview(linkButton)
             linkButton.snp.makeConstraints { make in
@@ -111,11 +132,41 @@ enum ToolbarVCModule {
                 make.width.height.equalTo(40)
             }
 
+            undoButton = UIButton(type: UIButton.ButtonType.system)
+            undoButton!.setImage(UIImage(systemName: "arrow.counterclockwise"), for: [])
+            undoButton!.addTarget(self, action: #selector(undo), for: .touchUpInside)
+            view.addSubview(undoButton!)
+            undoButton!.snp.makeConstraints { make in
+                make.left.equalTo(saveButton.snp.right).offset(20)
+                make.centerY.equalTo(self.view)
+                make.width.height.equalTo(40)
+            }
+            
+            redoButton = UIButton(type: UIButton.ButtonType.system)
+            redoButton!.setImage(UIImage(systemName: "arrow.clockwise"), for: [])
+            redoButton!.addTarget(self, action: #selector(redo), for: .touchUpInside)
+            view.addSubview(redoButton!)
+            redoButton!.snp.makeConstraints { make in
+                make.left.equalTo(undoButton!.snp.right).offset(10)
+                make.centerY.equalTo(self.view)
+                make.width.height.equalTo(40)
+            }
+
+            removeButton = UIButton(type: UIButton.ButtonType.system)
+            removeButton!.setImage(UIImage(systemName: "trash"), for: [])
+            removeButton!.addTarget(self, action: #selector(trash), for: .touchUpInside)
+            view.addSubview(removeButton!)
+            removeButton!.snp.makeConstraints { make in
+                make.left.equalTo(redoButton!.snp.right).offset(20)
+                make.centerY.equalTo(self.view)
+                make.width.height.equalTo(40)
+            }
+
             let label1 = UILabel()
             label1.text = "Type:"
             view.addSubview(label1)
             label1.snp.makeConstraints { make in
-                make.left.equalTo(saveButton.snp.right).offset(20)
+                make.left.equalTo(removeButton!.snp.right).offset(20)
                 make.centerY.equalTo(self.view)
             }
 
@@ -160,6 +211,9 @@ enum ToolbarVCModule {
 
             typeNameTF?.text = props.typeName
             tagsTF?.text = props.tags
+            undoButton?.isEnabled = props.undoEnabled
+            redoButton?.isEnabled = props.redoEnabled
+            removeButton?.isEnabled = props.trashEnabled
         }
 
         @objc func addList() {
@@ -176,6 +230,15 @@ enum ToolbarVCModule {
 
         @objc func save() {
             props?.saveCommand.perform()
+        }
+        @objc func undo() {
+            props?.undoCommand.perform()
+        }
+        @objc func redo() {
+            props?.redoCommand.perform()
+        }
+        @objc func trash() {
+            props?.removeCommand.perform()
         }
     }
 }

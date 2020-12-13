@@ -13,6 +13,9 @@ struct AppState: RootStateType, Equatable {
 
     var newLink: NewLink?
 
+    var undo = [Diagram]()
+    var redo = [Diagram]()
+
     var error = StateError.none
 }
 
@@ -29,6 +32,17 @@ extension AppState {
         }
         return nil
     }
+
+    mutating func resetUndoRedo() {
+        undo = [Diagram]()
+        redo = [Diagram]()
+        newLink = nil
+    }
+
+    mutating func addUndo() {
+        undo.append(diagram)
+        redo = [Diagram]()
+    }
 }
 
 extension AppState {
@@ -44,6 +58,7 @@ extension AppState {
         let diagram: Diagram
 
         func updateState(_ state: inout AppState) {
+            state.addUndo()
             state.diagram = diagram
         }
     }
@@ -52,6 +67,7 @@ extension AppState {
         let diagram: FSDiagram
 
         func updateState(_ state: inout AppState) {
+            state.resetUndoRedo()
             state.diagram.set(lists: diagram.lists)
             state.diagram.set(links: diagram.links)
         }
@@ -61,6 +77,7 @@ extension AppState {
         let lists: [FSList]
 
         func updateState(_ state: inout AppState) {
+            state.resetUndoRedo()
             state.diagram.set(lists: lists)
         }
     }
@@ -69,11 +86,12 @@ extension AppState {
         let links: [Link]
 
         func updateState(_ state: inout AppState) {
+            state.resetUndoRedo()
             state.diagram.set(links: links)
         }
     }
 
-    struct SetSelectedAction: Action, UIToolbar {
+    struct SetSelectedAction: Action {
         let selected: Diagram.Selected?
 
         func updateState(_ state: inout AppState) {
@@ -81,6 +99,7 @@ extension AppState {
             if case let .item(uuid) = selected {
                 if let _ = state.newLink {
                     if let from = state.newLink?.from {
+                        state.addUndo()
                         state.diagram.addLink(link: Link(from: from, to: uuid))
                         state.newLink = nil
                     } else {
@@ -95,6 +114,7 @@ extension AppState {
 
     struct DeleteSelectedAction: Action {
         func updateState(_ state: inout AppState) {
+            state.addUndo()
             switch state.diagram.selected {
             case let .item(uuid):
                 state.diagram.deleteItem(uuid: uuid)
@@ -113,25 +133,28 @@ extension AppState {
         let prevUUID: UUID
 
         func updateState(_ state: inout AppState) {
+            state.addUndo()
             state.diagram.addItem(prevUUID: prevUUID)
         }
     }
 
-    struct SetTypeNameAction: Action, UIToolbar {
+    struct SetTypeNameAction: Action {
         let typeName: String
 
         func updateState(_ state: inout AppState) {
             if case let .item(uuid) = state.diagram.selected {
+                state.addUndo()
                 state.diagram.setTypeName(uuid: uuid, typeName: typeName)
             }
         }
     }
 
-    struct SetTagsAction: Action, UIToolbar {
+    struct SetTagsAction: Action {
         let tags: String
 
         func updateState(_ state: inout AppState) {
             if case let .item(uuid) = state.diagram.selected {
+                state.addUndo()
                 state.diagram.setTags(uuid: uuid, tags: tags)
             }
         }
@@ -139,6 +162,7 @@ extension AppState {
 
     struct AddNewListAction: Action {
         func updateState(_ state: inout AppState) {
+            state.addUndo()
             state.diagram.addNewList(origin: state.newListOrigin)
         }
     }
@@ -147,6 +171,7 @@ extension AppState {
         let point: CGPoint
 
         func updateState(_ state: inout AppState) {
+            state.addUndo()
             state.newListOrigin = point
         }
     }
@@ -166,10 +191,30 @@ extension AppState {
         func updateState(_ state: inout AppState) {
         }
     }
+
+    struct UndoAction: Action {
+        func updateState(_ state: inout AppState) {
+            if let diagram = state.undo.last {
+                state.redo.append(state.diagram)
+                state.diagram = diagram
+                state.undo.removeLast()
+//                state.redo.append(state.undo.removeLast())
+            }
+        }
+    }
+
+    struct RedoAction: Action {
+        func updateState(_ state: inout AppState) {
+            if let diagram = state.redo.last {
+                state.undo.append(state.diagram)
+                state.diagram = diagram
+                state.redo.removeLast()
+//                state.undo.append(state.redo.removeLast())
+            }
+        }
+    }
 }
 
 extension Action {
     func updateState(_ state: inout AppState) { }
 }
-
-protocol UIToolbar {}

@@ -51,7 +51,7 @@ public class DiagramView: UIView {
                     realLeftBottom = delta.applying(transformFromRealToScreen().inverted())
                 }
             }
-            props?.setNewListOriginCommand.perform(with: realNewListOrigin)
+//            props?.setNewListOriginCommand.perform(with: realNewListOrigin)
             setNeedsDisplay()
         }
     }
