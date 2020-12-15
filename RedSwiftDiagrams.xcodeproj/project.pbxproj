@@ -33,11 +33,11 @@
 		C3681CB2257BF6FB000E3C91 /* UIBezierPath+.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C7B257BF6FA000E3C91 /* UIBezierPath+.swift */; };
 		C3681CB3257BF6FB000E3C91 /* CGSize+.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C7C257BF6FA000E3C91 /* CGSize+.swift */; };
 		C3681CB4257BF6FB000E3C91 /* CGContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C7D257BF6FA000E3C91 /* CGContext+.swift */; };
-		C3681CB9257BF6FB000E3C91 /* DiagramView+Gestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C84257BF6FA000E3C91 /* DiagramView+Gestures.swift */; };
-		C3681CBB257BF6FB000E3C91 /* DiagramView+New shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C86257BF6FA000E3C91 /* DiagramView+New shapes.swift */; };
-		C3681CBC257BF6FB000E3C91 /* DiagramView+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C87257BF6FA000E3C91 /* DiagramView+Conversion.swift */; };
-		C3681CC0257BF6FB000E3C91 /* DiagramView+DrawGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C8C257BF6FA000E3C91 /* DiagramView+DrawGrid.swift */; };
-		C3681CC1257BF6FB000E3C91 /* DiagramView+Draw.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C8D257BF6FA000E3C91 /* DiagramView+Draw.swift */; };
+		C3681CB9257BF6FB000E3C91 /* DV+Gestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C84257BF6FA000E3C91 /* DV+Gestures.swift */; };
+		C3681CBB257BF6FB000E3C91 /* DV+New shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C86257BF6FA000E3C91 /* DV+New shapes.swift */; };
+		C3681CBC257BF6FB000E3C91 /* DV+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C87257BF6FA000E3C91 /* DV+Conversion.swift */; };
+		C3681CC0257BF6FB000E3C91 /* DV+DrawGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C8C257BF6FA000E3C91 /* DV+DrawGrid.swift */; };
+		C3681CC1257BF6FB000E3C91 /* DV+Draw.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C8D257BF6FA000E3C91 /* DV+Draw.swift */; };
 		C3681CC2257BF6FB000E3C91 /* DiagramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3681C8E257BF6FA000E3C91 /* DiagramView.swift */; };
 /* End PBXBuildFile section */
 
@@ -68,11 +68,11 @@
 		C3681C7B257BF6FA000E3C91 /* UIBezierPath+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+.swift"; sourceTree = "<group>"; };
 		C3681C7C257BF6FA000E3C91 /* CGSize+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+.swift"; sourceTree = "<group>"; };
 		C3681C7D257BF6FA000E3C91 /* CGContext+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+.swift"; sourceTree = "<group>"; };
-		C3681C84257BF6FA000E3C91 /* DiagramView+Gestures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiagramView+Gestures.swift"; sourceTree = "<group>"; };
-		C3681C86257BF6FA000E3C91 /* DiagramView+New shapes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiagramView+New shapes.swift"; sourceTree = "<group>"; };
-		C3681C87257BF6FA000E3C91 /* DiagramView+Conversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiagramView+Conversion.swift"; sourceTree = "<group>"; };
-		C3681C8C257BF6FA000E3C91 /* DiagramView+DrawGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiagramView+DrawGrid.swift"; sourceTree = "<group>"; };
-		C3681C8D257BF6FA000E3C91 /* DiagramView+Draw.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiagramView+Draw.swift"; sourceTree = "<group>"; };
+		C3681C84257BF6FA000E3C91 /* DV+Gestures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DV+Gestures.swift"; sourceTree = "<group>"; };
+		C3681C86257BF6FA000E3C91 /* DV+New shapes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DV+New shapes.swift"; sourceTree = "<group>"; };
+		C3681C87257BF6FA000E3C91 /* DV+Conversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DV+Conversion.swift"; sourceTree = "<group>"; };
+		C3681C8C257BF6FA000E3C91 /* DV+DrawGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DV+DrawGrid.swift"; sourceTree = "<group>"; };
+		C3681C8D257BF6FA000E3C91 /* DV+Draw.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DV+Draw.swift"; sourceTree = "<group>"; };
 		C3681C8E257BF6FA000E3C91 /* DiagramView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiagramView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -151,11 +151,11 @@
 			isa = PBXGroup;
 			children = (
 				C3681C8E257BF6FA000E3C91 /* DiagramView.swift */,
-				C3681C84257BF6FA000E3C91 /* DiagramView+Gestures.swift */,
-				C3681C86257BF6FA000E3C91 /* DiagramView+New shapes.swift */,
-				C3681C87257BF6FA000E3C91 /* DiagramView+Conversion.swift */,
-				C3681C8D257BF6FA000E3C91 /* DiagramView+Draw.swift */,
-				C3681C8C257BF6FA000E3C91 /* DiagramView+DrawGrid.swift */,
+				C3681C84257BF6FA000E3C91 /* DV+Gestures.swift */,
+				C3681C86257BF6FA000E3C91 /* DV+New shapes.swift */,
+				C3681C87257BF6FA000E3C91 /* DV+Conversion.swift */,
+				C3681C8D257BF6FA000E3C91 /* DV+Draw.swift */,
+				C3681C8C257BF6FA000E3C91 /* DV+DrawGrid.swift */,
 				C3430DFF257C01A60001D1AF /* Diagram+.swift */,
 			);
 			path = DiagramView;
@@ -272,7 +272,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3681CC0257BF6FB000E3C91 /* DiagramView+DrawGrid.swift in Sources */,
+				C3681CC0257BF6FB000E3C91 /* DV+DrawGrid.swift in Sources */,
 				C3642E4D2583C7F400F6544D /* FileIteractor.swift in Sources */,
 				C3642E502583CBDF00F6544D /* FSService.swift in Sources */,
 				C3681C0C257BDC2D000E3C91 /* MainVC.swift in Sources */,
@@ -281,7 +281,7 @@
 				C3681CAF257BF6FB000E3C91 /* CGPoint+.swift in Sources */,
 				C334361F257FB55D00AACEDE /* Diagram.swift in Sources */,
 				C3681C47257BE2C2000E3C91 /* AppState.swift in Sources */,
-				C3681CC1257BF6FB000E3C91 /* DiagramView+Draw.swift in Sources */,
+				C3681CC1257BF6FB000E3C91 /* DV+Draw.swift in Sources */,
 				C3681CB3257BF6FB000E3C91 /* CGSize+.swift in Sources */,
 				C3681C54257BF520000E3C91 /* DiagramVC.swift in Sources */,
 				C3681CB2257BF6FB000E3C91 /* UIBezierPath+.swift in Sources */,
@@ -291,12 +291,12 @@
 				C3681CB1257BF6FB000E3C91 /* CGRect+.swift in Sources */,
 				C3343623257FB69400AACEDE /* List.swift in Sources */,
 				C3681C99257BF6FA000E3C91 /* UIColor+.swift in Sources */,
-				C3681CB9257BF6FB000E3C91 /* DiagramView+Gestures.swift in Sources */,
+				C3681CB9257BF6FB000E3C91 /* DV+Gestures.swift in Sources */,
 				C3681C4E257BF2CA000E3C91 /* SeparatorV.swift in Sources */,
-				C3681CBC257BF6FB000E3C91 /* DiagramView+Conversion.swift in Sources */,
+				C3681CBC257BF6FB000E3C91 /* DV+Conversion.swift in Sources */,
 				C3681CC2257BF6FB000E3C91 /* DiagramView.swift in Sources */,
 				C3681CB4257BF6FB000E3C91 /* CGContext+.swift in Sources */,
-				C3681CBB257BF6FB000E3C91 /* DiagramView+New shapes.swift in Sources */,
+				C3681CBB257BF6FB000E3C91 /* DV+New shapes.swift in Sources */,
 				C3681C0A257BDC2D000E3C91 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
